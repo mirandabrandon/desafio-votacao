@@ -26,8 +26,8 @@ public class SessaoVotacaoServiceTest {
         SessaoVotacao sessao = sessaoVotacaoService.abrirSessao(pauta.getId(), 5);
 
         assertThat(sessao).isNotNull();
-        assertThat(sessao.getDataAbertura()).isBefore(LocalDateTime.now());
-        assertThat(sessao.getDataFechamento()).isAfter(LocalDateTime.now());
+        assertThat(sessao.getDataInicio()).isBefore(LocalDateTime.now());
+        assertThat(sessao.getDataFim()).isAfter(LocalDateTime.now());
     }
 }
 

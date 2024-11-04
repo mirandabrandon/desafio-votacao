@@ -28,7 +28,7 @@ public class VotoService {
 
         boolean ableToVote = cpfValidationService.isAbleToVote(cpf);
 
-        if(!ableToVote) {
+        if (!ableToVote) {
             throw new RuntimeException("O associado não está habilitado para votar");
         }
 

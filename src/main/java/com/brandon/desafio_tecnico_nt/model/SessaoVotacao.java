@@ -15,11 +15,13 @@ public class SessaoVotacao {
     @JoinColumn(name = "pauta_id", referencedColumnName = "id")
     private Pauta pauta;
 
-    private LocalDateTime dataAbertura;
+    private LocalDateTime dataInicio;
 
-    private LocalDateTime dataFechamento;
+    private LocalDateTime dataFim;
 
     private Integer duracao; // em minutos
+
+    private Boolean ativa;
 
 
     public SessaoVotacao() {}
@@ -27,8 +29,8 @@ public class SessaoVotacao {
     public SessaoVotacao(Pauta pauta, Integer duracao) {
         this.pauta = pauta;
         this.duracao = duracao;
-        this.dataAbertura = LocalDateTime.now();
-        this.dataFechamento = this.dataAbertura.plusMinutes(duracao != null ? duracao : 1);
+        this.dataInicio = LocalDateTime.now();
+        this.dataFim = this.dataInicio.plusMinutes(duracao != null ? duracao : 1);
     }
 
     public Long getId() {
@@ -47,20 +49,20 @@ public class SessaoVotacao {
         this.pauta = pauta;
     }
 
-    public LocalDateTime getDataAbertura() {
-        return dataAbertura;
+    public LocalDateTime getDataInicio() {
+        return dataInicio;
     }
 
-    public void setDataAbertura(LocalDateTime dataAbertura) {
-        this.dataAbertura = dataAbertura;
+    public void setDataInicio(LocalDateTime dataAbertura) {
+        this.dataInicio = dataAbertura;
     }
 
-    public LocalDateTime getDataFechamento() {
-        return dataFechamento;
+    public LocalDateTime getDataFim() {
+        return dataFim;
     }
 
-    public void setDataFechamento(LocalDateTime dataFechamento) {
-        this.dataFechamento = dataFechamento;
+    public void setDataFim(LocalDateTime dataFechamento) {
+        this.dataFim = dataFechamento;
     }
 
     public Integer getDuracao() {
@@ -69,6 +71,14 @@ public class SessaoVotacao {
 
     public void setDuracao(Integer duracao) {
         this.duracao = duracao;
+    }
+
+    public Boolean getAtiva() {
+        return ativa;
+    }
+
+    public void setAtiva(Boolean ativa) {
+        this.ativa = ativa;
     }
 }
 
