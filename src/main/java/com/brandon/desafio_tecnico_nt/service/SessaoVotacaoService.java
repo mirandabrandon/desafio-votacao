@@ -30,6 +30,7 @@ public class SessaoVotacaoService {
     private MessageQueueService messageQueueService;
 
     public SessaoVotacao abrirSessao(Long pautaId, Integer duracao) {
+
         Pauta pauta = pautaRepository.findById(pautaId)
                 .orElseThrow(() -> new RuntimeException("Pauta não encontrada"));
 
@@ -43,18 +44,12 @@ public class SessaoVotacaoService {
 
     public SessaoVotacao getSessaoById(Long id) {
 
-        System.out.println("ID: " + id);
-
-        List<SessaoVotacao> all = sessaoVotacaoRepository.findAll();
-        for (SessaoVotacao sessaoVotacao : all) {
-            System.out.println("SESSÂO ACHADA: " + sessaoVotacao.getId());
-        }
-
         return sessaoVotacaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Sessão não encontrada"));
     }
 
     public void fecharSessao(Long pautaId) {
+
         SessaoVotacao sessaoVotacao = sessaoVotacaoRepository.findById(pautaId)
                 .orElseThrow(() -> new RuntimeException("Sessão não encontrada"));
 
@@ -73,6 +68,7 @@ public class SessaoVotacaoService {
 
     @Scheduled(fixedRate = 60000) // executa a cada 60 segundos
     public void verificarSessoesExpiradas() {
+
         LocalDateTime agora = LocalDateTime.now();
         List<SessaoVotacao> sessoesAbertas = sessaoVotacaoRepository.findByDataFimBeforeAndStatus(agora, StatusSessao.ATIVA);
 

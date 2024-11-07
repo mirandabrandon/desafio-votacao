@@ -12,9 +12,10 @@ public class Voto {
 
     private Long associadoId;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "pauta_id")
     private Pauta pauta;
+
 
     private Boolean voto;
 

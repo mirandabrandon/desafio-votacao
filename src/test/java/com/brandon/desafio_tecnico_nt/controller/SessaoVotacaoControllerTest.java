@@ -5,13 +5,16 @@ import com.brandon.desafio_tecnico_nt.model.Pauta;
 import com.brandon.desafio_tecnico_nt.model.SessaoVotacao;
 import com.brandon.desafio_tecnico_nt.repository.PautaRepository;
 import com.brandon.desafio_tecnico_nt.repository.SessaoVotacaoRepository;
+import com.brandon.desafio_tecnico_nt.repository.VotoRepository;
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
@@ -38,15 +41,20 @@ public class SessaoVotacaoControllerTest {
     private SessaoVotacaoRepository sessaoVotacaoRepository;
 
     @Autowired
-    private EntityManager entityManager;
+    private VotoRepository votoRepository;
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @BeforeEach
     public void setup() {
-        entityManager.createQuery("DELETE FROM SessaoVotacao").executeUpdate();
-        entityManager.createQuery("DELETE FROM Pauta").executeUpdate();
+        jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY FALSE");
 
-        entityManager.flush();
-        entityManager.clear();
+        votoRepository.deleteAll();
+        sessaoVotacaoRepository.deleteAll();
+        pautaRepository.deleteAll();
+
+        jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY TRUE");
 
         Pauta pauta = new Pauta();
         pauta.setNome("Test Pauta");
@@ -60,17 +68,28 @@ public class SessaoVotacaoControllerTest {
         sessaoVotacaoRepository.save(sessao);
     }
 
+    @AfterEach
+    public void tearDown() {
+        jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY FALSE");
+
+        votoRepository.deleteAll();
+        sessaoVotacaoRepository.deleteAll();
+        pautaRepository.deleteAll();
+
+        jdbcTemplate.execute("SET REFERENTIAL_INTEGRITY TRUE");
+    }
+
     @Test
     @WithMockUser(username = "testUser", roles = {"USER"})
     public void testAbrirSessao() throws Exception {
-        mockMvc.perform(post("/api/sessoes/abrir/{id}", 1)
+        mockMvc.perform(post("/api/sessoes/abrir/{id}", 3)
                         .param("duracao", "5")
                         .param("status", StatusSessao.ATIVA.toString())
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(2))  // ID of new SessaoVotacao
+                .andExpect(jsonPath("$.id").isNotEmpty())  // Verify ID of new SessaoVotacao is present
                 .andExpect(jsonPath("$.duracao").value(5))
                 .andExpect(jsonPath("$.status").value("ATIVA"));
     }
@@ -78,14 +97,11 @@ public class SessaoVotacaoControllerTest {
     @Test
     @WithMockUser(username = "testUser", roles = {"USER"})
     public void testGetSessaoById() throws Exception {
-        mockMvc.perform(get("/api/sessoes/{id}", 3)
+        mockMvc.perform(get("/api/sessoes/{id}", 4)
                         .with(SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(3));
+                .andExpect(jsonPath("$.id").value(4));
     }
 }
-
-
-

@@ -35,13 +35,12 @@ public class SessaoVotacaoServiceTest {
 
     @BeforeEach
     public void setup() {
-        // Any setup-specific configurations if needed
     }
 
     @Test
     public void testAbrirSessao() {
         Pauta pauta = new Pauta("Pauta Teste Sessao");
-        pauta.setId(1L); // Mock ID if necessary for the test
+        pauta.setId(3L);
 
         when(pautaRepository.findById(pauta.getId())).thenReturn(Optional.of(pauta));
         when(sessaoVotacaoRepository.save(org.mockito.ArgumentMatchers.any(SessaoVotacao.class)))
