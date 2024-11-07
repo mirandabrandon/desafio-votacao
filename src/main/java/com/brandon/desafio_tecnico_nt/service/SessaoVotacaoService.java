@@ -31,6 +31,8 @@ public class SessaoVotacaoService {
 
     public SessaoVotacao abrirSessao(Long pautaId, Integer duracao) {
 
+        System.out.println("PautaID: " + pautaId);
+
         Pauta pauta = pautaRepository.findById(pautaId)
                 .orElseThrow(() -> new RuntimeException("Pauta não encontrada"));
 
@@ -43,6 +45,13 @@ public class SessaoVotacaoService {
     }
 
     public SessaoVotacao getSessaoById(Long id) {
+
+        System.out.println("ID: " + id);
+
+        List<SessaoVotacao> all = sessaoVotacaoRepository.findAll();
+        for (SessaoVotacao sessaoVotacao : all) {
+            System.out.println("SESSÂO ACHADA: " + sessaoVotacao.getId());
+        }
 
         return sessaoVotacaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Sessão não encontrada"));

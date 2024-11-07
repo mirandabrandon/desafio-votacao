@@ -35,6 +35,14 @@ public class VotoService {
             }
         }
 
+        System.out.println("pauta id voto: " + pautaId);
+
+        List<SessaoVotacao> all = sessaoVotacaoRepository.findAll();
+
+        for (SessaoVotacao sessaoVotacao : all) {
+            System.out.println("pauta da sessao" +sessaoVotacao.getPauta().getId());
+        }
+
         SessaoVotacao sessaoVotacao = sessaoVotacaoRepository.findActiveSessionByPauta(pautaId, StatusSessao.ATIVA)
                 .orElseThrow(() -> new RuntimeException("Nenhuma sessão de votação ativa para esta pauta"));
 
