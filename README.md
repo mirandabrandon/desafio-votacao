@@ -13,6 +13,8 @@ Este projeto é uma API RESTful desenvolvida em **Java** com **Spring Boot** par
 
 # Endpoints da API
 
+### Endereço IPv4 público da aplicação na AWS: 44.223.74.200
+
 ## Endpoints Pauta
 
 URL base: `/api/pautas`
@@ -182,10 +184,3 @@ Base URL: `/api/sessoes`
 - **Maven** para compilar o projeto
 - **AWS CLI** configurado (se for implantar na AWS)
 - **Docker** (opcional, para testes locais com banco de dados MySQL)
-
-## Configuração
-
-1. **Clone o repositório**:
-   ```bash
-   git clone https://github.com/seu-usuario/desafio-tecnico-nt.git
-   cd desafio-tecnico-nt
