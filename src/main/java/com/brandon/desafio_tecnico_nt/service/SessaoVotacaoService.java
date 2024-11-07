@@ -1,5 +1,6 @@
 package com.brandon.desafio_tecnico_nt.service;
 
+import com.brandon.desafio_tecnico_nt.enuns.StatusSessao;
 import com.brandon.desafio_tecnico_nt.model.Pauta;
 import com.brandon.desafio_tecnico_nt.model.ResultadoVotacao;
 import com.brandon.desafio_tecnico_nt.model.SessaoVotacao;
@@ -32,16 +33,23 @@ public class SessaoVotacaoService {
         Pauta pauta = pautaRepository.findById(pautaId)
                 .orElseThrow(() -> new RuntimeException("Pauta não encontrada"));
 
-        Optional<SessaoVotacao> sessaoAtiva = sessaoVotacaoRepository.findActiveSessionByPauta(pautaId, LocalDateTime.now());
-        if (sessaoAtiva.isPresent()) {
-            throw new RuntimeException("Já existe uma sessão de votação aberta para esta pauta");
+        SessaoVotacao sessaoVotacao = new SessaoVotacao(pauta, duracao != null ? duracao : 1, StatusSessao.ATIVA);
+        if (sessaoVotacaoRepository.existsByPautaId(pautaId)) {
+            sessaoVotacaoRepository.deleteByPautaId(pautaId);
         }
 
-        SessaoVotacao sessaoVotacao = new SessaoVotacao(pauta, duracao != null ? duracao : 1);
         return sessaoVotacaoRepository.save(sessaoVotacao);
     }
 
     public SessaoVotacao getSessaoById(Long id) {
+
+        System.out.println("ID: " + id);
+
+        List<SessaoVotacao> all = sessaoVotacaoRepository.findAll();
+        for (SessaoVotacao sessaoVotacao : all) {
+            System.out.println("SESSÂO ACHADA: " + sessaoVotacao.getId());
+        }
+
         return sessaoVotacaoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Sessão não encontrada"));
     }
@@ -59,14 +67,14 @@ public class SessaoVotacaoService {
         messageQueueService.sendVotingResult(mensagemResultado);
 
         // marca a sessão como encerrada
-        sessaoVotacao.setAtiva(false);
+        sessaoVotacao.setStatus(StatusSessao.INATIVA);
         sessaoVotacaoRepository.save(sessaoVotacao);
     }
 
     @Scheduled(fixedRate = 60000) // executa a cada 60 segundos
     public void verificarSessoesExpiradas() {
         LocalDateTime agora = LocalDateTime.now();
-        List<SessaoVotacao> sessoesAbertas = sessaoVotacaoRepository.findByDataFimBeforeAndAtivaTrue(agora);
+        List<SessaoVotacao> sessoesAbertas = sessaoVotacaoRepository.findByDataFimBeforeAndStatus(agora, StatusSessao.ATIVA);
 
         for (SessaoVotacao sessao : sessoesAbertas) {
             fecharSessao(sessao.getPauta().getId());

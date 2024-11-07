@@ -17,7 +17,7 @@ public class VotoController {
     private VotoService votoService;
 
     @PostMapping("/registrar")
-    public ResponseEntity<Voto> registrarVoto(@RequestParam Long pautaId, @RequestParam Long associadoId, @RequestParam String cpf, @RequestParam Boolean voto) {
+    public ResponseEntity<Voto> registrarVoto(@RequestParam Long pautaId, @RequestParam Long associadoId, @RequestParam(required = false) String cpf, @RequestParam Boolean voto) {
         Voto novoVoto = votoService.registrarVoto(pautaId, associadoId, cpf, voto);
         return ResponseEntity.ok(novoVoto);
     }

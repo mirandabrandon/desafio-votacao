@@ -1,5 +1,6 @@
 package com.brandon.desafio_tecnico_nt.model;
 
+import com.brandon.desafio_tecnico_nt.enuns.StatusSessao;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -11,7 +12,7 @@ public class SessaoVotacao {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "pauta_id", referencedColumnName = "id")
     private Pauta pauta;
 
@@ -21,16 +22,17 @@ public class SessaoVotacao {
 
     private Integer duracao; // em minutos
 
-    private Boolean ativa;
+    private StatusSessao status;
 
 
     public SessaoVotacao() {}
 
-    public SessaoVotacao(Pauta pauta, Integer duracao) {
+    public SessaoVotacao(Pauta pauta, Integer duracao, StatusSessao status) {
         this.pauta = pauta;
         this.duracao = duracao;
         this.dataInicio = LocalDateTime.now();
         this.dataFim = this.dataInicio.plusMinutes(duracao != null ? duracao : 1);
+        this.status = status;
     }
 
     public Long getId() {
@@ -73,12 +75,12 @@ public class SessaoVotacao {
         this.duracao = duracao;
     }
 
-    public Boolean getAtiva() {
-        return ativa;
+    public StatusSessao getStatus() {
+        return status;
     }
 
-    public void setAtiva(Boolean ativa) {
-        this.ativa = ativa;
+    public void setStatus(StatusSessao status) {
+        this.status = status;
     }
 }
 

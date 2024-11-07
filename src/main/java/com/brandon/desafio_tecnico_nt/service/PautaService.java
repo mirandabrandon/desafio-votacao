@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PautaService {
@@ -24,6 +25,10 @@ public class PautaService {
     public Pauta getPautaById(Long id) {
         return pautaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pauta não encontrada"));
+    }
+
+    public Optional<Pauta> findById(Long invalidPautaId) {
+        return pautaRepository.findById(invalidPautaId);
     }
 }
 

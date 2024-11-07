@@ -1,5 +1,6 @@
 package com.brandon.desafio_tecnico_nt.repository;
 
+import com.brandon.desafio_tecnico_nt.enuns.StatusSessao;
 import com.brandon.desafio_tecnico_nt.model.SessaoVotacao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,9 +12,15 @@ import java.util.Optional;
 
 public interface SessaoVotacaoRepository extends JpaRepository<SessaoVotacao, Long> {
 
-    @Query("SELECT s FROM SessaoVotacao s WHERE s.pauta.id = :pautaId AND :currentTime BETWEEN s.dataInicio AND s.dataFim")
-    Optional<SessaoVotacao> findActiveSessionByPauta(@Param("pautaId") Long pautaId, @Param("currentTime") LocalDateTime currentTime);
+    @Query("SELECT s FROM SessaoVotacao s WHERE s.pauta.id = :pautaId AND s.status = :status")
+    Optional<SessaoVotacao> findActiveSessionByPauta(@Param("pautaId") Long pautaId, @Param("status") StatusSessao status);
 
     // busca todas as sessões que já expiraram e ainda estão ativas
-    List<SessaoVotacao> findByDataFimBeforeAndAtivaTrue(LocalDateTime dataAtual);
+    @Query("SELECT s FROM SessaoVotacao s WHERE s.dataFim < :dataAtual AND s.status = :status")
+    List<SessaoVotacao> findByDataFimBeforeAndStatus(@Param("dataAtual") LocalDateTime dataAtual, @Param("status") StatusSessao status);
+
+
+    Boolean existsByPautaId(Long pautaId);
+
+    void deleteByPautaId(Long pautaId);
 }

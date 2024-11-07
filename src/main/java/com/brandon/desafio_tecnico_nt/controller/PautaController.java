@@ -7,6 +7,7 @@ import com.brandon.desafio_tecnico_nt.service.VotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class PautaController {
     private VotoService votoService;
 
     @PostMapping
-    public ResponseEntity<Pauta> createPauta(@RequestBody Pauta pauta) {
+    public ResponseEntity<Pauta> createPauta(@Valid @RequestBody Pauta pauta) {
         Pauta novaPauta = pautaService.createPauta(pauta);
         return ResponseEntity.ok(novaPauta);
     }

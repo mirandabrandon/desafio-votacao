@@ -1,5 +1,6 @@
 package com.brandon.desafio_tecnico_nt.service;
 
+import com.brandon.desafio_tecnico_nt.enuns.StatusSessao;
 import com.brandon.desafio_tecnico_nt.model.ResultadoVotacao;
 import com.brandon.desafio_tecnico_nt.model.SessaoVotacao;
 import com.brandon.desafio_tecnico_nt.model.Voto;
@@ -26,13 +27,15 @@ public class VotoService {
 
     public Voto registrarVoto(Long pautaId, Long associadoId, String cpf, Boolean voto) {
 
-        boolean ableToVote = cpfValidationService.isAbleToVote(cpf);
+        if (cpf != null && cpf.length() == 11) {
+            boolean ableToVote = cpfValidationService.isAbleToVote(cpf);
 
-        if (!ableToVote) {
-            throw new RuntimeException("O associado não está habilitado para votar");
+            if (!ableToVote) {
+                throw new RuntimeException("O associado não está habilitado para votar");
+            }
         }
 
-        SessaoVotacao sessaoVotacao = sessaoVotacaoRepository.findActiveSessionByPauta(pautaId, LocalDateTime.now())
+        SessaoVotacao sessaoVotacao = sessaoVotacaoRepository.findActiveSessionByPauta(pautaId, StatusSessao.ATIVA)
                 .orElseThrow(() -> new RuntimeException("Nenhuma sessão de votação ativa para esta pauta"));
 
         Optional<Voto> votoExistente = votoRepository.findByAssociadoIdAndPautaId(associadoId, pautaId);
