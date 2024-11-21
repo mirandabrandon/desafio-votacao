@@ -1,4 +1,4 @@
-# Desafio Técnico NT - Sistema de Votação em Assembleias
+# Desafio Técnico - Sistema de Votação em Assembleias
 
 ## Descrição do Projeto
 
